@@ -1,7 +1,7 @@
 exec = hello.out	# Executable name
 sources = $(wildcard src/*.c)
 objects = $(patsubst src/%.c, build/%.o, $(sources))
-flags = -g
+flags = -g -Iinclude	# for include dir
 
 # Rule to create the executable from object files
 $(exec): $(objects)
