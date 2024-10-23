@@ -1,20 +1,22 @@
-exec = hello.out
+exec = hello.out	# Executable name
 sources = $(wildcard src/*.c)
-objects = $(sources:.c=.o)
+objects = $(patsubst src/%.c, build/%.o, $(sources))
 flags = -g
 
+# Rule to create the executable from object files
 $(exec): $(objects)
 	gcc $(objects) $(flags) -o $(exec)
 
-%.o: %.c include/%.h
+# Rule to create object files in the build directory from source files
+build/%.o: src/%.c | build
 	gcc -c $(flags) $< -o $@
 
-install:
-	make
-	cp ./hello.out /usr/local/bin/hello
 
+build:
+	mkdir -p build
 
 clean:
-	-rm *.out
-	-rm *.o
-	-rm src/*.o
+	-rm -rf *.out
+	-rm -rf build
+
+.PHONY: clean build
