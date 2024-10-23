@@ -1,0 +1,3 @@
+var name = "mrinmoy";
+
+print(name);
