@@ -67,7 +67,9 @@ AST_T* parser_parse_statements(parser_T* parser)
 
 AST_T* parser_parse_expr(parser_T* parser) 
 {
-
+    switch (parser->current_token->types) {
+        case TOKEN_STRING: return parser_parse_string(parser);
+    }
 } 
 
 AST_T* parser_parse_factor(parser_T* parser)
@@ -101,12 +103,27 @@ AST_T* parser_parse_variable_definition(parser_T* parser) {
 
 AST_T* parser_parse_variable(parser_T* parser) 
 {
+    char* token_value = parser->current_token->value;
+    parser_eat(parser, TOKEN_ID); // var name or func call
+
+    if (parser->current_token->types == TOKEN_LPAREN)
+    {
+        return parser_parse_function_call(parser);
+    }
+
+    AST_T* ast_variable = init_ast(AST_VARIABLE);
+    ast_variable->variable_name = token_value;
+
+    return ast_variable;
 
 }
 
 AST_T* parser_parse_string(parser_T* parser) 
 {
+    AST_T* ast_string = init_ast(AST_STRING);
+    ast_string->string_value = parser->current_token->value;
 
+    parser_eat(parser, TOKEN_STRING);
 }
 
 AST_T* parser_parse_id(parser_T* parser)
